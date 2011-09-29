@@ -18,7 +18,7 @@ These changes are changes which need code modification in your code
 
 Facebook connect has changed the way they authenticate the user on the iphone. In the previous release of Sharekit it was done in a browser view where the user needed to enter his email and password.<br />
 Now Facebook connect looks if you have the Facebook app installed on your iPhone it get's the credentials from the app. If the Facebook app is not installed it will launch safari where the user needs to enter there email and password and it he is authenticated Facebook will call the URL scheme of your app.<br />
-Your app needs to have an URL scheme that Facebook connects generates; normally fb<APP_ID>. URL schemes are defined in the application plist. It also needs the function (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url in your application delegate. Look at the example app for the code.
+Your app needs to have an URL scheme that Facebook connects generates; normally fb$APP_ID. URL schemes are defined in the application plist. It also needs the function (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url in your application delegate. Look at the example app for the code.
 
 
 ## Disclaimer
