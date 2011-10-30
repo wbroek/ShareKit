@@ -122,7 +122,7 @@ static NSString *const kSHKFacebookExpiryDateKey=@"kSHKFacebookExpiryDate";
 
 + (BOOL)canShareText
 {
-	return YES;
+	return NO;
 }
 
 + (BOOL)canShareImage

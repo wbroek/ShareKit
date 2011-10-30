@@ -128,26 +128,27 @@
 {	
 	if ([self validateItem])
 	{			
+		NSString *password = [SHKEncode([self getAuthValueForKey:@"password"]) stringByReplacingOccurrencesOfString:@"/" withString:@"%2F"];
 		self.request = [[[SHKRequest alloc] initWithURL:[NSURL URLWithString:
-														[NSString stringWithFormat:@"https://%@:%@@api.pinboard.in/v1/posts/add?url=%@&description=%@&tags=%@&extended=%@&shared=%@",
-														 SHKEncode([self getAuthValueForKey:@"username"]),
-														 SHKEncode([self getAuthValueForKey:@"password"]),
-														 SHKEncodeURL(item.URL),
-														 SHKEncode(item.title),
-														 SHKEncode(item.tags),
-														 SHKEncode(item.text),
-														 [item customBoolForSwitchKey:@"shared"]?@"yes":@"no"
-														 ]]
-												params:nil
-											  delegate:self
-									isFinishedSelector:@selector(sendFinished:)
-												method:@"GET"
-											 autostart:YES] autorelease];
-		
-		
+                                                         [NSString stringWithFormat:@"https://%@:%@@api.pinboard.in/v1/posts/add?url=%@&description=%@&tags=%@&extended=%@&shared=%@",
+                                                          SHKEncode([self getAuthValueForKey:@"username"]),
+                                                          password,
+                                                          SHKEncodeURL(item.URL),
+                                                          SHKEncode(item.title),
+                                                          SHKEncode(item.tags),
+                                                          SHKEncode(item.text),
+                                                          [item customBoolForSwitchKey:@"shared"]?@"yes":@"no"
+                                                          ]]
+                                                 params:nil
+                                               delegate:self
+                                     isFinishedSelector:@selector(sendFinished:)
+                                                 method:@"GET"
+                                              autostart:YES] autorelease];
+        
+        
 		// Notify delegate
 		[self sendDidStart];
-		
+        
 		return YES;
 	}
 	

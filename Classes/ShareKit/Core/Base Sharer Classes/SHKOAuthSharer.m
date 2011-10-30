@@ -140,7 +140,20 @@
 
 - (void)tokenAuthorize
 {	
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?oauth_token=%@", authorizeURL.absoluteString, requestToken.key]];
+	// here, the user needs to authorize
+	// there is a bug in creating this URL concerning the '?'
+	// if there is already a ? in the URL we shouldn't append another ?
+	// let assume it's safe to use a & instead
+	
+	NSURL *url;
+	
+	if([authorizeURL.absoluteString rangeOfString:@"?"].location == NSNotFound)
+		url = [NSURL URLWithString:[NSString stringWithFormat:@"%@?oauth_token=%@", authorizeURL.absoluteString, requestToken.key]];
+	else 
+		url = [NSURL URLWithString:[NSString stringWithFormat:@"%@&oauth_token=%@", authorizeURL.absoluteString, requestToken.key]];
+	
+	if(SHKDebugShowLogs)
+		SHKLog(@"tokenAuthorize url %@", url);
 	
 	SHKOAuthView *auth = [[SHKOAuthView alloc] initWithURL:url delegate:self];
 	[[SHK currentHelper] showViewController:auth];	

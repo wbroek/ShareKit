@@ -162,11 +162,9 @@
 	id class;
 	NSMutableArray *sectionData = [NSMutableArray arrayWithCapacity:0];	
 	NSArray *source = [[SHK sharersDictionary] objectForKey:section];
-	NSLog(@"sources %@",source);
 	for( NSString *sharerClassName in source)
 	{
 		class = NSClassFromString(sharerClassName);
-        NSLog(@"class %@",class);
 		if ( [class canShare] && [class canShareType:item.shareType] )
 			[sectionData addObject:[NSDictionary dictionaryWithObjectsAndKeys:sharerClassName,@"className",[class sharerTitle],@"name",nil]];
 	}
