@@ -28,6 +28,7 @@
 #import <Foundation/Foundation.h>
 #import "SHKOAuthSharer.h"
 #import "SHKTwitterForm.h"
+#import <Twitter/TWTweetComposeViewController.h>
 
 @interface SHKTwitter : SHKOAuthSharer 
 {	

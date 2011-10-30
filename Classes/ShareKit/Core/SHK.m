@@ -94,7 +94,7 @@ BOOL SHKinit;
 	if (rootViewController == nil)
 	{
 		// Try to find the root view controller programmically
-		
+
 		// Find the top window (that is not an alert view or other window)
 		UIWindow *topWindow = [[UIApplication sharedApplication] keyWindow];
 		if (topWindow.windowLevel != UIWindowLevelNormal)
@@ -121,7 +121,6 @@ BOOL SHKinit;
 	UIViewController *topViewController = [self getTopViewController];	
 	if (topViewController == nil)
 		NSAssert(NO, @"ShareKit: There is no view controller to display from");
-	
 		
 	// If a view is already being shown, hide it, and then try again
 	if (currentView != nil)
@@ -130,6 +129,11 @@ BOOL SHKinit;
 		[[currentView parentViewController] dismissModalViewControllerAnimated:YES];
 		return;
 	}
+    
+    // Special treatment for the twitter view of IOS 5
+    if ([vc isKindOfClass: [TWTweetComposeViewController class]]) {
+        [self.rootViewController presentModalViewController:vc animated:YES];
+    }
 		
 	// Wrap the view in a nav controller if not already
 	if (![vc respondsToSelector:@selector(pushViewController:animated:)])
@@ -150,7 +154,7 @@ BOOL SHKinit;
 	
 	// Show the nav controller
 	else
-	{		
+	{	
 		if ([vc respondsToSelector:@selector(modalPresentationStyle)])
 			vc.modalPresentationStyle = [SHK modalPresentationStyle];
 		
@@ -179,7 +183,10 @@ BOOL SHKinit;
 	if (currentView != nil)
 	{
 		// Dismiss the modal view
-		if ([currentView parentViewController] != nil)
+        if ([currentView respondsToSelector:@selector(presentingViewController)] && [currentView presentingViewController] != nil) {
+			self.isDismissingView = YES;
+			[[currentView presentingViewController] dismissModalViewControllerAnimated:animated];         
+        } else if ([currentView parentViewController] != nil)
 		{
 			self.isDismissingView = YES;
 			[[currentView parentViewController] dismissModalViewControllerAnimated:animated];
@@ -570,6 +577,7 @@ NSString * SHKEncode(NSString * value)
 	string = [string stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
 	string = [string stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	string = [string stringByReplacingOccurrencesOfString:@"&" withString:@"%26"];
+    string = [string stringByReplacingOccurrencesOfString:@"\"" withString:@"'"];
 	
 	return string;	
 }

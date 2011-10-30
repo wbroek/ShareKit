@@ -98,6 +98,9 @@
 
 - (BOOL)isAuthorized
 {		
+    if(NSClassFromString(@"TWTweetComposeViewController")) {
+        if ([TWTweetComposeViewController canSendTweet]) return TRUE;
+    }
 	return [self restoreAccessToken];
 }
 
@@ -185,22 +188,61 @@
 
 - (void)show
 {
-	if (item.shareType == SHKShareTypeURL)
-	{
-		[self shortenURL];
-	}
-	
-	else if (item.shareType == SHKShareTypeImage)
-	{
-		[item setCustomValue:item.title forKey:@"status"];
-		[self showTwitterForm];
-	}
-	
-	else if (item.shareType == SHKShareTypeText)
-	{
-		[item setCustomValue:item.text forKey:@"status"];
-		[self showTwitterForm];
-	}
+    
+    if(NSClassFromString(@"TWTweetComposeViewController")) {
+        if ([TWTweetComposeViewController canSendTweet]) {
+        
+        TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
+        
+        if (item.text.length>139) [tweetViewController setInitialText:[NSString stringWithFormat:@"%@...",[item.text substringToIndex:137]]];
+        else [tweetViewController setInitialText:item.text];
+        if (item.shareType == SHKShareTypeURL) [tweetViewController addURL:item.URL];
+        if (item.shareType == SHKShareTypeImage)  [tweetViewController addImage:[item image]];
+        
+        tweetViewController.completionHandler = ^(TWTweetComposeViewControllerResult res) {
+            [tweetViewController dismissModalViewControllerAnimated:YES];
+            [tweetViewController release];
+            [[SHK currentHelper] viewWasDismissed];
+        };
+        
+        [[SHK currentHelper] showViewController:tweetViewController];
+        } else {
+            if (item.shareType == SHKShareTypeURL)
+            {
+                [self shortenURL];
+            }
+            
+            else if (item.shareType == SHKShareTypeImage)
+            {
+                [item setCustomValue:item.title forKey:@"status"];
+                [self showTwitterForm];
+            }
+            
+            else if (item.shareType == SHKShareTypeText)
+            {
+                [item setCustomValue:item.text forKey:@"status"];
+                [self showTwitterForm];
+            }
+        }
+    } else {
+        
+        if (item.shareType == SHKShareTypeURL)
+        {
+            [self shortenURL];
+        }
+        
+        else if (item.shareType == SHKShareTypeImage)
+        {
+            [item setCustomValue:item.title forKey:@"status"];
+            [self showTwitterForm];
+        }
+        
+        else if (item.shareType == SHKShareTypeText)
+        {
+            [item setCustomValue:item.text forKey:@"status"];
+            [self showTwitterForm];
+        }
+    }
 }
 
 - (void)showTwitterForm
@@ -257,7 +299,7 @@
 	[[SHKActivityIndicator currentIndicator] hide];
 	
 	NSString *result = [[aRequest getResult] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-	
+	NSLog(@"result %@",result);
 	if (result == nil || [NSURL URLWithString:result] == nil)
 	{
 		// TODO - better error message
@@ -272,11 +314,15 @@
 	
 	else
 	{		
-		///if already a bitly login, use url instead
-		if ([result isEqualToString:@"ALREADY_A_BITLY_LINK"])
-			result = [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        if ([result isEqualToString:@"MISSING_ARG_APIKEY"]) {
+            // APIkey not set, use normal url which Twitter will short for you
+            [item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : item.title, [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] forKey:@"status"];
+        } else {
+            ///if already a bitly login, use url instead
+            if ([result isEqualToString:@"ALREADY_A_BITLY_LINK"]) result = [item.URL.absoluteString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 		
-		[item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : item.title, result] forKey:@"status"];
+            [item setCustomValue:[NSString stringWithFormat:@"%@ %@", item.text ? item.text : item.title, result] forKey:@"status"];
+        }
 	}
 	
 	[self showTwitterForm];
@@ -289,7 +335,7 @@
 - (BOOL)validate
 {
 	NSString *status = [item customValueForKey:@"status"];
-	return status != nil && status.length >= 0 && status.length <= 140;
+	return status != nil && status.length > 0 && status.length <= 140;
 }
 
 - (BOOL)send

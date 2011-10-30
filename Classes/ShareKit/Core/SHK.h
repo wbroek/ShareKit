@@ -35,7 +35,7 @@
 #import "SHKActivityIndicator.h"
 #import "SHKFormFieldSettings.h"
 #import "UIWebView+SHK.h"
-
+#import <Twitter/TWTweetComposeViewController.h>
 
 @class SHKActionSheet;
 @class SHKViewControllerWrapper;
