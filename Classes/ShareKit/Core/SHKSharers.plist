@@ -15,13 +15,13 @@
 		<string>SHKEvernote</string>
 		<string>SHKTwitter</string>
 		<string>SHKPinboard</string>
-		<string>SHKDelicious</string>
 		<string>SHKGoogleReader</string>
 		<string>SHKFacebook</string>
 		<string>SHKReadItLater</string>
 		<string>SHKInstapaper</string>
 		<string>SHKTumblr</string>
 		<string>SHKHyves</string>
+		<string>SHKLinkedIn</string>
 	</array>
 </dict>
 </plist>

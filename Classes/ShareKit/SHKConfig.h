@@ -40,9 +40,12 @@
 #define SHKHyvesConsumerKey			@""
 #define SHKHyvesSecretKey			@""
 
-// Delicious - https://developer.apps.yahoo.com/projects
-#define SHKDeliciousConsumerKey		@""
-#define SHKDeliciousSecretKey		@""
+// LinkedIn -  http://developer.linkedin.com/
+// Please note that LinkedIn does enforce application throttling limits, 
+// Developer Login (app/secret keys) https://www.linkedin.com/secure/developer 
+//
+#define SHKLinkedInApiKey	@""
+#define SHKLinkedInSecretKey	@""
 
 // Facebook - http://www.facebook.com/developers
 // SHKFacebookAppID is the Application ID provided by Facebook
