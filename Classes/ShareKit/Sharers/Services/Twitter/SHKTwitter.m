@@ -194,6 +194,7 @@
         
         TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
         
+        if (item.title.length>0) item.text = [item.title stringByAppendingFormat:@"%@ ",item.text];     
         if (item.text.length>139) [tweetViewController setInitialText:[NSString stringWithFormat:@"%@...",[item.text substringToIndex:137]]];
         else [tweetViewController setInitialText:item.text];
         if (item.shareType == SHKShareTypeURL) [tweetViewController addURL:item.URL];
@@ -299,7 +300,7 @@
 	[[SHKActivityIndicator currentIndicator] hide];
 	
 	NSString *result = [[aRequest getResult] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-	NSLog(@"result %@",result);
+
 	if (result == nil || [NSURL URLWithString:result] == nil)
 	{
 		// TODO - better error message
@@ -366,7 +367,7 @@
 
 - (void)sendStatus
 {
-	OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://api.twitter.com/1/statuses/update.json"]
+	OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/update.json"]
 																	consumer:consumer
 																	   token:accessToken
 																	   realm:nil
@@ -443,7 +444,7 @@
 	
 	NSURL *serviceURL = nil;
 	if([item customValueForKey:@"profile_update"]){
-		serviceURL = [NSURL URLWithString:@"http://api.twitter.com/1/account/update_profile_image.json"];
+		serviceURL = [NSURL URLWithString:@"https://api.twitter.com/1/account/update_profile_image.json"];
 	} else {
 		serviceURL = [NSURL URLWithString:@"https://api.twitter.com/1/account/verify_credentials.json"];
 	}
@@ -451,7 +452,7 @@
 	OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:serviceURL
 																	consumer:consumer
 																	   token:accessToken
-																	   realm:@"http://api.twitter.com/"
+																	   realm:@"https://api.twitter.com/"
 														   signatureProvider:signatureProvider];
 	[oRequest setHTTPMethod:@"GET"];
 	
@@ -470,7 +471,7 @@
 		oRequest = [[OAMutableURLRequest alloc] initWithURL:serviceURL
 												   consumer:consumer
 													  token:accessToken
-													  realm:@"http://api.twitter.com/"
+													  realm:@"https://api.twitter.com/"
 										  signatureProvider:signatureProvider];
 		[oRequest setHTTPMethod:@"POST"];
 		[oRequest setValue:@"https://api.twitter.com/1/account/verify_credentials.json" forHTTPHeaderField:@"X-Auth-Service-Provider"];
@@ -576,7 +577,7 @@
 	// remove it so in case of other failures this doesn't get hit again
 	[item setCustomValue:nil forKey:@"followMe"];
 	
-	OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://api.twitter.com/1/friendships/create/%@.json", SHKTwitterUsername]]
+	OAMutableURLRequest *oRequest = [[OAMutableURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.twitter.com/1/friendships/create/%@.json", SHKTwitterUsername]]
 																	consumer:consumer
 																	   token:accessToken
 																	   realm:nil
