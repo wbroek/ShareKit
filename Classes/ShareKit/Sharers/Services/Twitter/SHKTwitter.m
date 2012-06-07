@@ -194,7 +194,7 @@
         
         TWTweetComposeViewController *tweetViewController = [[TWTweetComposeViewController alloc] init];
         
-        if (item.title.length>0) item.text = [item.title stringByAppendingFormat:@"%@ ",item.text];     
+        if (item.title.length>0) item.text = [item.title stringByAppendingFormat:@"%@ ",(item.text.length>0?item.text:@"")];  
         if (item.text.length>139) [tweetViewController setInitialText:[NSString stringWithFormat:@"%@...",[item.text substringToIndex:137]]];
         else [tweetViewController setInitialText:item.text];
         if (item.shareType == SHKShareTypeURL) [tweetViewController addURL:item.URL];
