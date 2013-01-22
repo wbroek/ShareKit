@@ -14,6 +14,10 @@ This overhaul version has as goal to have all the libraries used by the share se
 
 These changes are changes which need code modification in your code
 
+### Facebook
+Added native Facebook support which works in iOS 6<br>
+If the device runs on iOS 5 Facebook connect is used, see below
+
 ### Facebook connect
 
 Facebook connect has changed the way they authenticate the user on the iphone. In the previous release of Sharekit it was done in a browser view where the user needed to enter his email and password.<br />
