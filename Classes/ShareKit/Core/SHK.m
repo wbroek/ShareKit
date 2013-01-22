@@ -133,6 +133,13 @@ BOOL SHKinit;
     // Special treatment for the twitter view of IOS 5
     if ([vc isKindOfClass: [TWTweetComposeViewController class]]) {
         [self.rootViewController presentModalViewController:vc animated:YES];
+        return;
+    }
+
+    // Special treatment for the facebook/social view of IOS 6
+    if ([vc isKindOfClass: [SLComposeViewController class]]) {
+        [self.rootViewController presentModalViewController:vc animated:YES];
+        return;
     }
 		
 	// Wrap the view in a nav controller if not already
@@ -468,7 +475,7 @@ static NSDictionary *sharersDictionary = nil;
 + (BOOL)addToOfflineQueue:(SHKItem *)item forSharer:(NSString *)sharerId
 {
 	// Generate a unique id for the share to use when saving associated files
-	NSString *uid = [NSString stringWithFormat:@"%@-%i-%i-%i", sharerId, item.shareType, [[NSDate date] timeIntervalSince1970], arc4random()];
+	NSString *uid = [NSString stringWithFormat:@"%@-%i-%f-%i", sharerId, item.shareType, [[NSDate date] timeIntervalSince1970], arc4random()];
 	
 	
 	// store image in cache

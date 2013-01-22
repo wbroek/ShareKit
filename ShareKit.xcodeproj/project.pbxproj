@@ -104,6 +104,8 @@
 		43D1DEF011D5CDD200550D75 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43D1DEEF11D5CDD200550D75 /* SystemConfiguration.framework */; };
 		43EF406E11D3FFF800B1F700 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EF406D11D3FFF800B1F700 /* Security.framework */; };
 		43FF9C7412270E9F00ADE53C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 43FF9C7212270E9F00ADE53C /* Localizable.strings */; };
+		6C26EB6D16AEE4D500A6A151 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C26EB6C16AEE4D500A6A151 /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		6C26EB6F16AEE4F500A6A151 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C26EB6E16AEE4F400A6A151 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6CB021D81434B89300526AF1 /* SHKItem+KVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB021C61434B89300526AF1 /* SHKItem+KVC.m */; };
 		6CB021D91434B89300526AF1 /* UIWebView+SHKPlus.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB021C81434B89300526AF1 /* UIWebView+SHKPlus.m */; };
 		6CB021DA1434B89300526AF1 /* SHKLinkedIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB021CA1434B89300526AF1 /* SHKLinkedIn.m */; };
@@ -322,6 +324,8 @@
 		43EF406D11D3FFF800B1F700 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		43FF9C7312270E9F00ADE53C /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = Classes/ShareKit/Localization/en.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
 		43FF9C7512270EB900ADE53C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = Classes/ShareKit/Localization/de.lproj/Localizable.strings; sourceTree = SOURCE_ROOT; };
+		6C26EB6C16AEE4D500A6A151 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		6C26EB6E16AEE4F400A6A151 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		6CB021C51434B89300526AF1 /* SHKItem+KVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SHKItem+KVC.h"; sourceTree = "<group>"; };
 		6CB021C61434B89300526AF1 /* SHKItem+KVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SHKItem+KVC.m"; sourceTree = "<group>"; };
 		6CB021C71434B89300526AF1 /* UIWebView+SHKPlus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+SHKPlus.h"; sourceTree = "<group>"; };
@@ -362,6 +366,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6C26EB6F16AEE4F500A6A151 /* Social.framework in Frameworks */,
+				6C26EB6D16AEE4D500A6A151 /* Accounts.framework in Frameworks */,
 				6CD308BD145DE8AA00B48372 /* Twitter.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -467,6 +473,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6C26EB6E16AEE4F400A6A151 /* Social.framework */,
+				6C26EB6C16AEE4D500A6A151 /* Accounts.framework */,
 				6CD308BC145DE8AA00B48372 /* Twitter.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -1023,7 +1031,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ShareKit" */;
 			compatibilityVersion = "Xcode 3.2";

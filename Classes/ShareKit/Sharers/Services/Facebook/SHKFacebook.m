@@ -26,6 +26,8 @@
 //
 
 #import "SHKFacebook.h"
+#import <Social/Social.h>
+#import <Accounts/Accounts.h>
 
 static NSString *const kSHKStoredItemKey=@"kSHKStoredItem";
 static NSString *const kSHKFacebookAccessTokenKey=@"kSHKFacebookAccessToken";
@@ -77,7 +79,7 @@ static NSString *const kSHKFacebookExpiryDateKey=@"kSHKFacebookExpiryDate";
 	if (![fileManager fileExistsAtPath:imagePath]) 
 		[fileManager createDirectoryAtPath:imagePath withIntermediateDirectories:YES attributes:nil error:nil];
 	
-  NSString *uid = [NSString stringWithFormat:@"img-%i-%i", [[NSDate date] timeIntervalSince1970], arc4random()];    
+  NSString *uid = [NSString stringWithFormat:@"img-%f-%i", [[NSDate date] timeIntervalSince1970], arc4random()];    
   // store image in cache
   NSData *imageData = UIImagePNGRepresentation(image);
   imagePath = [imagePath stringByAppendingPathComponent:uid];
@@ -147,14 +149,17 @@ static NSString *const kSHKFacebookExpiryDateKey=@"kSHKFacebookExpiryDate";
 #pragma mark Authentication
 
 - (BOOL)isAuthorized
-{	  
-  Facebook *facebook = [SHKFacebook facebook];
-  if ([facebook isSessionValid]) return YES;
-  
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  facebook.accessToken = [defaults stringForKey:kSHKFacebookAccessTokenKey];
-  facebook.expirationDate = [defaults objectForKey:kSHKFacebookExpiryDateKey];
-  return [facebook isSessionValid];
+{
+    if(NSClassFromString(@"SLComposeViewController")) return true;
+    else {
+      Facebook *facebook = [SHKFacebook facebook];
+      if ([facebook isSessionValid]) return YES;
+      
+      NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+      facebook.accessToken = [defaults stringForKey:kSHKFacebookAccessTokenKey];
+      facebook.expirationDate = [defaults objectForKey:kSHKFacebookExpiryDateKey];
+      return [facebook isSessionValid];
+    }
 }
 
 - (void)promptAuthorization
@@ -192,51 +197,98 @@ static NSString *const kSHKFacebookExpiryDateKey=@"kSHKFacebookExpiryDate";
 #pragma mark Share API Methods
 
 - (BOOL)send
-{			
-  NSMutableDictionary *params = [NSMutableDictionary dictionary];
-  NSString *actions = [NSString stringWithFormat:@"{\"name\":\"Get %@\",\"link\":\"%@\"}",  
-                       SHKMyAppName, SHKMyAppURL];
-  [params setObject:actions forKey:@"actions"];
+{
+    if(NSClassFromString(@"SLComposeViewController")) {
+        if([SLComposeViewController isAvailableForServiceType:SLServiceTypeFacebook]) {
+            
+            SLComposeViewController *controller = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+            
+            SLComposeViewControllerCompletionHandler facebookCompletionBlock = ^(SLComposeViewControllerResult result){
+                if (result == SLComposeViewControllerResultCancelled) {
+                    
+                    
+                    
+                } else {
+                    
+                }
+                
+                [controller dismissViewControllerAnimated:YES completion:Nil];
+            };
+            controller.completionHandler = facebookCompletionBlock;
+            
+            if (item.shareType == SHKShareTypeURL && item.URL)
+            {
+                [controller addURL:item.URL];
+                if (item.text) {
+                    [controller setInitialText:item.text];
+                }
+            } else if (item.shareType == SHKShareTypeText && item.text) {
+                [controller setInitialText:item.text];
+            } else if (item.shareType == SHKShareTypeImage && item.image) {
+                [controller addImage:item.image];
+                if (item.text) {
+                    [controller setInitialText:item.text];
+                }
+                if (item.title) {
+                    [controller setTitle:item.title];
+                }
+            }
+            [[SHK currentHelper] showViewController:controller];
+            
+            return YES;
+        }
+        else{
+            NSLog(@"UnAvailable");
+            return  NO;
+        }
+        
+    } else {
+    
+      NSMutableDictionary *params = [NSMutableDictionary dictionary];
+      NSString *actions = [NSString stringWithFormat:@"{\"name\":\"Get %@\",\"link\":\"%@\"}",  
+                           SHKMyAppName, SHKMyAppURL];
+      [params setObject:actions forKey:@"actions"];
 
-	if (item.shareType == SHKShareTypeURL && item.URL)
-	{
-    NSString *url = [item.URL absoluteString];
-    [params setObject:url forKey:@"link"];
-    [params setObject:item.title == nil ? url : item.title
-               forKey:@"name"];    
-    if (item.text)
-      [params setObject:item.text forKey:@"message"];
-    NSString *pictureURI = [item customValueForKey:@"picture"];
-    if (pictureURI)
-      [params setObject:pictureURI forKey:@"picture"];
-	}
-	else if (item.shareType == SHKShareTypeText && item.text)
-	{
-    [params setObject:item.text forKey:@"message"];
-	}	
-	else if (item.shareType == SHKShareTypeImage && item.image)
-	{	
-    if (item.title) 
-      [params setObject:item.title forKey:@"caption"];
-    if (item.text) 
-      [params setObject:item.text forKey:@"message"];
-    [params setObject:item.image forKey:@"picture"];
-    // There does not appear to be a way to add the photo 
-    // via the dialog option:
-    [[SHKFacebook facebook] requestWithGraphPath:@"me/photos"
-                                       andParams:params
-                                   andHttpMethod:@"POST"
-                                     andDelegate:self];
-    return YES;
-	} 
-  else 
-    // There is nothing to send
-    return NO;
-  
-  [[SHKFacebook facebook] dialog:@"feed"
-                       andParams:params 
-                     andDelegate:self];
-	return YES;
+        if (item.shareType == SHKShareTypeURL && item.URL)
+        {
+        NSString *url = [item.URL absoluteString];
+        [params setObject:url forKey:@"link"];
+        [params setObject:item.title == nil ? url : item.title
+                   forKey:@"name"];    
+        if (item.text)
+          [params setObject:item.text forKey:@"message"];
+        NSString *pictureURI = [item customValueForKey:@"picture"];
+        if (pictureURI)
+          [params setObject:pictureURI forKey:@"picture"];
+        }
+        else if (item.shareType == SHKShareTypeText && item.text)
+        {
+        [params setObject:item.text forKey:@"message"];
+        }	
+        else if (item.shareType == SHKShareTypeImage && item.image)
+        {	
+        if (item.title) 
+          [params setObject:item.title forKey:@"caption"];
+        if (item.text) 
+          [params setObject:item.text forKey:@"message"];
+        [params setObject:item.image forKey:@"picture"];
+        // There does not appear to be a way to add the photo 
+        // via the dialog option:
+        [[SHKFacebook facebook] requestWithGraphPath:@"me/photos"
+                                           andParams:params
+                                       andHttpMethod:@"POST"
+                                         andDelegate:self];
+        return YES;
+        } 
+      else 
+        // There is nothing to send
+        return NO;
+      
+      [[SHKFacebook facebook] dialog:@"feed"
+                           andParams:params 
+                         andDelegate:self];
+        return YES;
+    }
 }
 
 #pragma mark -
